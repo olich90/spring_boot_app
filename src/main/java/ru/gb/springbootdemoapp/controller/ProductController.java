@@ -2,33 +2,32 @@ package ru.gb.springbootdemoapp.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import ru.gb.springbootdemoapp.dto.Product;
 import ru.gb.springbootdemoapp.service.ProductService;
 
-import java.util.List;
-
 @Controller
-//@RequestMapping("product") // префикс для всех методов нашего класса во избежание колизий URL-ов разных контроллеров
 public class ProductController {
 
-    private ProductService productService;
+    private final ProductService productService;
 
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
 
-    // MVC
-    // http://localhost:8080/app/all GET
-    @GetMapping("/all")
-    public String getAllProducts(Model model) {
-        model.addAttribute("products", productService.getProductList());
+    // http://localhost:8080/app/products GET
+    @GetMapping("/products")
+    public String getAllProducts(Model model, @RequestParam(defaultValue = "0") Float minCost, @RequestParam(defaultValue = "99999999") Float maxCost) {
+        model.addAttribute("products", productService.findAllByCost(minCost, maxCost));
         return "product_list";
     }
 
-    // http://localhost:8080/app/info/3 GET
-    @GetMapping("/info/{id}")
-    public String getProductInfo(@PathVariable Integer id, Model model) {
+    // http://localhost:8080/app/products/3 GET
+    @GetMapping("/products/{id}")
+    public String getProductInfo(@PathVariable Long id, Model model) {
         model.addAttribute("product", productService.getProductByID(id));
         return "product_info";
     }
@@ -39,32 +38,17 @@ public class ProductController {
         return "product_form";
     }
 
-    // http://localhost:8080/app/add POST
+    // http://localhost:8080/app/products POST
     @PostMapping("/add")
     public String saveProduct(Product product) {
         productService.saveProduct(product);
-        return "redirect:/all";
+        return "redirect:/products";
     }
 
-    @PostMapping("/delete/{id}")
-    public String saveProduct(@PathVariable Integer id) {
+    // http://localhost:8080/app/products/delete/4
+    @PostMapping("/products/delete/{id}")
+    public String deleteProduct(@PathVariable Long id) {
         productService.deleteProductByID(id);
-        return "redirect:/all";
+        return "redirect:/products";
     }
-
-
-// хотим отдать голые данные в формате JSON, когда пишем API
-//    @GetMapping("/all/rest")
-//    @ResponseBody // хотим вернуть данные в формате JSON, а не ссылки на template
-//    public List<Product> getAllRest() {
-//        return productService.getProductList();
-//    }
-//
-//    // сохранение продукта
-//    @PostMapping("add/rest")
-//    @ResponseBody
-//    public List<Product> saveProductRest(@RequestBody /* считать продукт из тела запроса */ Product product) {
-//        productService.saveProduct(product);
-//        return productService.getProductList();
-//    }
 }

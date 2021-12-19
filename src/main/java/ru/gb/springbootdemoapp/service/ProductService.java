@@ -8,25 +8,29 @@ import ru.gb.springbootdemoapp.repository.ProductRepository;
 
 @Service
 public class ProductService {
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
 
     public List<Product> getProductList() {
-        return productRepository.getProductList();
+        return productRepository.findAll();
     }
 
-    public Product getProductByID(int id) {
-        return productRepository.getProductByID(id);
+    public Product getProductByID(Long id) {
+        return productRepository.findById(id).orElse(null);
     }
 
     public void saveProduct(Product product) {
-        productRepository.saveProduct(product);
+        productRepository.save(product);
     }
 
-    public void deleteProductByID(int id) {
-        productRepository.deleteProductByID(id);
+    public void deleteProductByID(Long id) {
+        productRepository.deleteById(id);
+    }
+
+    public List<Product> findAllByCost(Float minCost, Float maxCost) {
+        return productRepository.findAllByCostGreaterThanAndCostLessThan(minCost, maxCost);
     }
 }
