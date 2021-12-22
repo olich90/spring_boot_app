@@ -24,10 +24,10 @@
             <td th:text="${product.id}">1</td>
             <td th:text="${product.title}">Notebook Lenovo</td>
             <td th:text="${product.cost}">1000</td>
-            <td><form method="post" th:action="@{${'/delete/' + product.id}}">
+            <td><form method="post" th:action="@{${'/products/delete/' + product.id}}">
                 <button type="submit" class="btn btn-danger">Delete</button>
             </form></td>
-            <td><form method="get" th:action="@{${'/info/' + product.id}}">
+            <td><form method="get" th:action="@{${'/products/' + product.id}}">
                 <button type="submit" class="btn btn-info">Info</button>
             </form></td>
         </tr>
