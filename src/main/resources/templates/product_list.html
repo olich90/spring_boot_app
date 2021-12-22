@@ -38,7 +38,16 @@
         <button type="submit" class="btn btn-success">Add</button>
     </form>
 
-</div>
+    <br>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            <tr th:each="pageNumbers : ${list}">
+            <li class="page-item"><a class="page-link" th:href="@{/products(page=${pageNumbers - 1})}"><p th:text="${pageNumbers}">1</p></a></li>
+            </tr>
+        </ul>
+    </nav>
 
+
+</div>
 </body>
 </html>
