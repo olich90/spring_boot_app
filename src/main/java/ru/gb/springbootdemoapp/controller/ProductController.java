@@ -1,5 +1,7 @@
 package ru.gb.springbootdemoapp.controller;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,6 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import ru.gb.springbootdemoapp.dto.Product;
 import ru.gb.springbootdemoapp.service.ProductService;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 public class ProductController {
@@ -20,8 +26,12 @@ public class ProductController {
 
     // http://localhost:8080/app/products GET
     @GetMapping("/products")
-    public String getAllProducts(Model model, @RequestParam(defaultValue = "0") Float minCost, @RequestParam(defaultValue = "99999999") Float maxCost) {
-        model.addAttribute("products", productService.findAllByCost(minCost, maxCost));
+    public String getAllProducts(Model model, @PageableDefault Pageable pageable) {
+        model.addAttribute("products", productService.findAll(pageable));
+        List<Integer> pageNumbers  = IntStream.rangeClosed(1, productService.getProductList().size() / 10)
+                .boxed()
+                .collect(Collectors.toList());
+        model.addAttribute("list",  pageNumbers);
         return "product_list";
     }
 
