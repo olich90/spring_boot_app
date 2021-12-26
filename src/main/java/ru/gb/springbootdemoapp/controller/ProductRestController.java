@@ -1,5 +1,7 @@
 package ru.gb.springbootdemoapp.controller;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.gb.springbootdemoapp.dto.Product;
 import ru.gb.springbootdemoapp.service.ProductService;
+
+import javax.validation.Valid;
 
 import java.util.List;
 
@@ -32,13 +36,14 @@ public class ProductRestController {
 
     // http://localhost:8080/app/rest/products/10 GET
     @GetMapping("/products/{id}")
-    public Product getProductInfo(@PathVariable Long id, Model model) {
-        return productService.getProductByID(id);
+    public ResponseEntity<Product> getProductInfo(@PathVariable Long id, Model model) {
+        Product product = productService.getProductByID(id);
+        return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
     // http://localhost:8080/app/rest/add POST
     @PostMapping("/add")
-    public Product saveProduct(@RequestBody Product product) {
+    public Product saveProduct(@Valid @RequestBody Product product) {
         productService.saveProduct(product);
         return product;
     }
