@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <title>Список продуктов</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -36,6 +36,9 @@
   <br>
     <form method="get" th:action="@{${'/add/'}}">
         <button type="submit" class="btn btn-success">Add</button>
+    </form>
+    <form sec:authorize="isAuthenticated()" method="post" th:action="@{'/logout'}">
+        <button type="submit" class="btn btn-warning">Logout</button>
     </form>
 
     <br>
